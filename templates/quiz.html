@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz</title>
+</head>
+<body>
+    <h1>Quiz</h1>
+    <p>Question {{ current_question + 1 }} of {{ question_count }}</p>
+    <h3>{{ question['category'] }}</h3>
+    <p>{{ question['question'] }}</p>
+    <form action="/check_answer" method="post">
+        {% for answer in question['incorrect_answers'] %}
+            <input type="radio" name="answer" value="{{ answer }}"> {{ answer }}<br>
+        {% endfor %}
+        <br>
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
