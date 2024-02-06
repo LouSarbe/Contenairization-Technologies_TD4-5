@@ -1,8 +1,41 @@
 import requests
 import random
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, jsonify
+import psycopg2
+
+db_host = "db"
+db_port = "5432"
+db_name = "CT_PW04-database"
+db_user = "LouSarbe"
+db_password = "Password01"
+
 
 app = Flask(__name__)
+
+def insert_data_into_db(data):
+    try:
+        connection = psycopg2.connect(
+            host=db_host,
+            port=db_port,
+            dbname=db_name,
+            user=db_user,
+            password=db_password
+        )
+
+        cursor = connection.cursor()
+
+        insert_query = "INSERT INTO products (name, price) VALUES (%s, %s)"
+        cursor.execute(insert_query, (data['value1'], data['value2']))
+
+        connection.commit()
+
+        cursor.close()
+        connection.close()
+
+        return True
+    except Exception as e:
+        print("Error inserting data into database:", e)
+        return False
 
 def get_questions(api_url):
     try:
@@ -42,6 +75,19 @@ def quiz():
     else:
         questions = get_questions(api_url)
         return redirect('/')
+    
+@app.route('/api/insert', methods=['POST'])
+def insert_into_db():
+    # Example JSON data
+    data = {
+        'value1': 'Louis',
+        'value2': 999.99
+    }
+
+    if insert_data_into_db(data):
+        return jsonify({'message': 'Data inserted successfully'}), 200
+    else:
+        return jsonify({'message': 'Failed to insert data into database'}), 500
 
 @app.route('/check_answer', methods=['POST'])
 def check_answer():
@@ -64,4 +110,4 @@ def health_check():
     return '200 OK'
 
 if __name__ == '__main__':
-    app.run(port=8080, debug=True, threaded=True)
+    app.run(host='0.0.0.0', port=8080, debug=True, threaded=True)
