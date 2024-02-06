@@ -3,7 +3,7 @@ import random
 from flask import Flask, render_template, request, redirect, jsonify
 import psycopg2
 
-db_host = "db"
+db_host = "CT_PW04_Louis_BESSARD-db"
 db_port = "5432"
 db_name = "CT_PW04-database"
 db_user = "LouSarbe"
@@ -78,7 +78,6 @@ def quiz():
     
 @app.route('/api/insert', methods=['POST'])
 def insert_into_db():
-    # Example JSON data
     data = {
         'value1': 'Louis',
         'value2': 999.99
